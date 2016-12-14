@@ -62,7 +62,7 @@ class LocationTrackingService : Service() {
     val TAG = "LocationTrackingService"
 
     val INTERVAL = 1000.toLong() // In milliseconds
-    val DISTANCE = 10.toFloat() // In meters
+    val DISTANCE = 1.toFloat() // In meters
 
     val locationListeners = arrayOf(
             LTRLocationListener(LocationManager.GPS_PROVIDER, this),
