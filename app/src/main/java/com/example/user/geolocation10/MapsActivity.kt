@@ -61,7 +61,6 @@ class MapsActivity : FragmentActivity(), OnMapReadyCallback {
         startService(Intent(baseContext, LocationTrackingService::class.java))
         val mMessageReceiver = object : BroadcastReceiver() {
             override fun onReceive(context: Context, intent: Intent) {
-                // Get extra data included in the Intent
                 val message = intent.getStringExtra("Status")
                 val b = intent.getBundleExtra("Location")
                 var point2 = b.getParcelable<Parcelable>("LatLng 1") as LatLng
