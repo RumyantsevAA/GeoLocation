@@ -12,7 +12,6 @@ import android.util.Log
 
 
 import com.google.android.gms.maps.model.LatLng
-import com.google.android.gms.maps.model.PolylineOptions
 
 
 class LocationTrackingService : Service() {
@@ -58,14 +57,6 @@ class LocationTrackingService : Service() {
                     Log.w(TAG, "Failed to remove location listeners")
                 }
             }
-    }
-
-    private fun sendMessage() {
-        Log.d("sender", "Broadcasting message")
-        val intent = Intent("custom-event-name")
-        // You can also include some extra data.
-        intent.putExtra("message", "This is my message!")
-        LocalBroadcastManager.getInstance(this).sendBroadcast(intent)
     }
 
     val TAG = "LocationTrackingService"
