@@ -66,6 +66,10 @@ class MapsActivity : FragmentActivity(), OnMapReadyCallback {
                 var point2 = b.getParcelable<Parcelable>("LatLng 1") as LatLng
                 var pointDebug2 = b.getParcelable<Parcelable>("LatLng 2") as LatLng
                 if(point!=null) {
+                    var line2 = mMap!!.addPolyline(PolylineOptions()
+                            .add(point, LatLng(point2.latitude, point2.longitude))
+                            .width(5f)
+                            .color(Color.RED))
                     if(pointDebug!=null) {
                         var line = mMap!!.addPolyline(PolylineOptions()
                                 .add(pointDebug, pointDebug2)
@@ -78,10 +82,6 @@ class MapsActivity : FragmentActivity(), OnMapReadyCallback {
                                 .width(5f)
                                 .color(Color.BLUE))
                     }
-                    var line = mMap!!.addPolyline(PolylineOptions()
-                            .add(point, LatLng(point2.latitude, point2.longitude))
-                            .width(5f)
-                            .color(Color.RED))
                 }
                 point=point2
                 pointDebug=pointDebug2

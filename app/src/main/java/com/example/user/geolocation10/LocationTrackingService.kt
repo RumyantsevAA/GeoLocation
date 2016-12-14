@@ -62,7 +62,7 @@ class LocationTrackingService : Service() {
     val TAG = "LocationTrackingService"
 
     val INTERVAL = 1000.toLong() // In milliseconds
-    val DISTANCE = 1.toFloat() // In meters
+    val DISTANCE = 10.toFloat() // In meters
 
     val locationListeners = arrayOf(
             LTRLocationListener(LocationManager.GPS_PROVIDER, this),
@@ -71,20 +71,23 @@ class LocationTrackingService : Service() {
 
     class LTRLocationListener(provider: String, context: Context) : android.location.LocationListener {
 
-        val lastLocation = Location(provider)
+        var lastLocation = Location(provider)
+        var started=false
         val thisContext =context
 
         override fun onLocationChanged(location: Location?) {
             //    Log.i("MessageTag","Location changed")
+            if(!started){ lastLocation=location!!
+                started=true }
             var latitude=location!!.latitude
-            var longitude=location!!.longitude
-            var speed=location!!.speed
-            var accuracy=location!!.accuracy
-            var time=location!!.time
+            var longitude=location.longitude
+            var speed=location.speed
+            var accuracy=location.accuracy
+            var time=location.time
             //    Log.d("Time Speed Accuracy", time.toString()+" "+speed.toString()+" "+accuracy.toString())
             var filter= KalmanFilter(speed)
             filter.SetState(lastLocation.latitude, lastLocation.longitude, lastLocation.accuracy, lastLocation.time)
-            filter.Process(location!!.latitude, location!!.longitude, location!!.accuracy, location!!.time)
+            filter.Process(location.latitude, location.longitude, location.accuracy, location.time)
             sendMessageToActivity(LatLng(filter._lat, filter._lng), LatLng(latitude, longitude), "Location")
             lastLocation.set(location)
         }
@@ -99,7 +102,6 @@ class LocationTrackingService : Service() {
         }
         fun sendMessageToActivity(l1: LatLng, l2: LatLng, msg: String) {
             val intent = Intent("GPSLocationUpdates")
-            // You can also include some extra data.
             intent.putExtra("Status", msg)
             val b = Bundle()
             b.putParcelable("LatLng 1", l1)
