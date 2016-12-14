@@ -1,0 +1,4 @@
+<resources>
+    <string name="app_name">GeoLocation1.0</string>
+    <string name="title_activity_maps">Map</string>
+</resources>
