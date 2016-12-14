@@ -94,7 +94,7 @@ class LocationTrackingService : Service() {
             var filter= KalmanFilter(speed)
             filter.SetState(lastLocation.latitude, lastLocation.longitude, lastLocation.accuracy, lastLocation.time)
             filter.Process(location!!.latitude, location!!.longitude, location!!.accuracy, location!!.time)
-            sendMessageToActivity(LatLng(latitude, longitude), "Location")
+            sendMessageToActivity(LatLng(filter._lat, filter._lng), LatLng(latitude, longitude), "Location")
             lastLocation.set(location)
         }
 
@@ -106,12 +106,13 @@ class LocationTrackingService : Service() {
 
         override fun onStatusChanged(provider: String?, status: Int, extras: Bundle?) {
         }
-        fun sendMessageToActivity(l: LatLng, msg: String) {
+        fun sendMessageToActivity(l1: LatLng, l2: LatLng, msg: String) {
             val intent = Intent("GPSLocationUpdates")
             // You can also include some extra data.
             intent.putExtra("Status", msg)
             val b = Bundle()
-            b.putParcelable("LatLng", l)
+            b.putParcelable("LatLng 1", l1)
+            b.putParcelable("LatLng 2", l2)
             intent.putExtra("Location", b)
             LocalBroadcastManager.getInstance(thisContext).sendBroadcast(intent)
         }

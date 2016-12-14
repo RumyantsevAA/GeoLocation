@@ -46,6 +46,7 @@ class MapsActivity : FragmentActivity(), OnMapReadyCallback {
 
     private var mMap: GoogleMap? = null
     private var point: LatLng? = null
+    private var pointDebug: LatLng? = null
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -63,15 +64,28 @@ class MapsActivity : FragmentActivity(), OnMapReadyCallback {
                 // Get extra data included in the Intent
                 val message = intent.getStringExtra("Status")
                 val b = intent.getBundleExtra("Location")
-                var point2 = b.getParcelable<Parcelable>("LatLng") as LatLng
+                var point2 = b.getParcelable<Parcelable>("LatLng 1") as LatLng
+                var pointDebug2 = b.getParcelable<Parcelable>("LatLng 2") as LatLng
                 if(point!=null) {
-                    var options= PolylineOptions()
+                    if(pointDebug!=null) {
+                        var line = mMap!!.addPolyline(PolylineOptions()
+                                .add(pointDebug, pointDebug2)
+                                .width(5f)
+                                .color(Color.BLUE))
+                    }
+                    else {
+                        var line = mMap!!.addPolyline(PolylineOptions()
+                                .add(point, pointDebug2)
+                                .width(5f)
+                                .color(Color.BLUE))
+                    }
+                    var line = mMap!!.addPolyline(PolylineOptions()
                             .add(point, LatLng(point2.latitude, point2.longitude))
                             .width(5f)
-                            .color(Color.RED)
-                    var line = mMap!!.addPolyline(options)
+                            .color(Color.RED))
                 }
                 point=point2
+                pointDebug=pointDebug2
             }
         }
         LocalBroadcastManager.getInstance(baseContext).registerReceiver(
@@ -84,33 +98,32 @@ class MapsActivity : FragmentActivity(), OnMapReadyCallback {
             override fun onMapClick(point2: LatLng) {
                 var filter = KalmanFilter(0.toFloat())
                 if (point != null) {
+                    if(pointDebug != null) {
+                        var line = mMap!!.addPolyline(PolylineOptions()
+                                .add(pointDebug, point2)
+                                .width(5f)
+                                .color(Color.BLUE))
+                    }
+                    else {
+                        var line = mMap!!.addPolyline(PolylineOptions()
+                                .add(point, point2)
+                                .width(5f)
+                                .color(Color.BLUE))
+                    }
                     filter.SetState(point!!.latitude, point!!.longitude, 20.toFloat(), 1000)
                     filter.Process(point2.latitude, point2.longitude, 20.toFloat(), 1000)
-                    var options = PolylineOptions()
+                    var line2 = mMap!!.addPolyline(PolylineOptions()
                             .add(point, LatLng(filter._lat, filter._lng))
                             .width(5f)
-                            .color(Color.RED)
+                            .color(Color.RED))
                     point = LatLng(filter._lat, filter._lng)
-                    var line = mMap!!.addPolyline(options)
+                    pointDebug = point2
                 } else {
                     point = point2
+                    pointDebug=point2
                 }
             }
         })
-    /*    mMap!!.setOnMapClickListener(object : GoogleMap.OnMapClickListener {
-            override fun onMapClick(point2: LatLng) {
-                if (point != null) {
-                    var options = PolylineOptions()
-                            .add(point, point2)
-                            .width(5f)
-                            .color(Color.RED)
-                    point = point2
-                    var line = mMap!!.addPolyline(options)
-                } else {
-                    point = point2
-                }
-            }
-        })  */
         val sydney = LatLng(-34.0, 151.0)
         mMap!!.moveCamera(CameraUpdateFactory.newLatLng(sydney))
     }
